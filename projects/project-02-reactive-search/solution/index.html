@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reactive Book Search</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="header__title">Book Search</h1>
+      <p class="header__subtitle">Search millions of books via Open Library</p>
+      <div class="search">
+        <input
+          type="search"
+          id="search-input"
+          class="search__input"
+          placeholder="Search for books..."
+          autocomplete="off"
+          autofocus
+        />
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- Loading spinner -->
+      <div id="loading" class="loading" hidden>
+        <div class="spinner"></div>
+        <p class="loading__text">Searching...</p>
+      </div>
+
+      <!-- Error message -->
+      <div id="error" class="error" hidden>
+        <p class="error__icon">!</p>
+        <p class="error__message"></p>
+        <button class="error__retry" id="retry-btn">Try Again</button>
+      </div>
+
+      <!-- Empty state -->
+      <div id="empty" class="empty" hidden>
+        <p class="empty__icon">?</p>
+        <p class="empty__message"></p>
+      </div>
+
+      <!-- Results -->
+      <div id="results-info" class="results-info" hidden>
+        <p class="results-info__text"></p>
+      </div>
+      <div id="results" class="results"></div>
+
+      <!-- Pagination -->
+      <nav id="pagination" class="pagination" hidden></nav>
+    </main>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

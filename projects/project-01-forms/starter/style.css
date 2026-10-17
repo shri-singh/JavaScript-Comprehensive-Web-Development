@@ -1,0 +1,447 @@
+/* ================================================================
+   Project 1 — Multi-Step Registration Form
+   Clean, modern styling with CSS custom properties
+   ================================================================ */
+
+/* ── Custom Properties ── */
+:root {
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-light: #e0e7ff;
+  --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-warning: #ca8a04;
+  --color-danger: #dc2626;
+  --color-danger-light: #fee2e2;
+
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-border: #cbd5e1;
+  --color-border-focus: var(--color-primary);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Reset / Base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* ── Screen-reader only utility ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Form Container ── */
+.form-container {
+  width: 100%;
+  max-width: 560px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem 2rem;
+}
+
+.form-container h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+}
+
+/* ── Progress Bar ── */
+.progress-bar {
+  margin-bottom: 2rem;
+}
+
+.progress-bar__track {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width var(--transition-normal);
+}
+
+.progress-bar__steps {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-bar__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.progress-bar__dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  transition: background var(--transition-normal), color var(--transition-normal);
+}
+
+.progress-bar__label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  transition: color var(--transition-normal);
+  text-align: center;
+}
+
+.progress-bar__step--active .progress-bar__dot,
+.progress-bar__step--completed .progress-bar__dot {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.progress-bar__step--active .progress-bar__label {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.progress-bar__step--completed .progress-bar__label {
+  color: var(--color-success);
+}
+
+.progress-bar__step--completed .progress-bar__dot {
+  background: var(--color-success);
+}
+
+/* ── Form Steps ── */
+.form-step {
+  border: none;
+  animation: fadeIn var(--transition-normal);
+}
+
+.form-step[hidden] {
+  display: none;
+}
+
+.form-step legend {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--color-text);
+  padding: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Form Fields ── */
+.form-field {
+  margin-bottom: 1.25rem;
+}
+
+.form-field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  color: var(--color-text);
+}
+
+.form-field .required {
+  color: var(--color-danger);
+}
+
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field input[type="password"],
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+/* Invalid state */
+.form-field input[aria-invalid="true"],
+.form-field select[aria-invalid="true"],
+.form-field textarea[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.form-field input[aria-invalid="true"]:focus,
+.form-field select[aria-invalid="true"]:focus,
+.form-field textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px var(--color-danger-light);
+}
+
+/* Error message */
+.form-field__error {
+  display: block;
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+  margin-top: 0.25rem;
+  transition: opacity var(--transition-fast);
+}
+
+/* Character count */
+.form-field__count {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: right;
+  margin-top: 0.25rem;
+}
+
+/* ── Checkbox Group ── */
+.form-field--checkboxes {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+}
+
+.form-field--checkboxes legend {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* ── Password Strength Meter ── */
+.password-strength {
+  margin-top: 0.5rem;
+}
+
+.password-strength__track {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.password-strength__fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  transition: width var(--transition-normal), background-color var(--transition-normal);
+}
+
+.password-strength__fill[data-strength="weak"] {
+  width: 25%;
+  background: var(--color-danger);
+}
+
+.password-strength__fill[data-strength="fair"] {
+  width: 50%;
+  background: var(--color-warning);
+}
+
+.password-strength__fill[data-strength="strong"] {
+  width: 75%;
+  background: #22c55e;
+}
+
+.password-strength__fill[data-strength="very-strong"] {
+  width: 100%;
+  background: var(--color-success);
+}
+
+.password-strength__text {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  min-height: 1rem;
+}
+
+/* ── Navigation Buttons ── */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: #fff;
+  margin-left: auto;
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn--primary:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1.5px solid var(--color-border);
+}
+
+.btn--secondary:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.btn--secondary:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* ── Success Message ── */
+.success-message {
+  text-align: center;
+  padding: 2rem 1rem;
+  animation: fadeIn var(--transition-normal);
+}
+
+.success-message[hidden] {
+  display: none;
+}
+
+.success-message__icon {
+  width: 64px;
+  height: 64px;
+  color: var(--color-success);
+  margin-bottom: 1rem;
+}
+
+.success-message h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.success-message p {
+  color: var(--color-text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .progress-bar__label {
+    font-size: 0.65rem;
+  }
+
+  .form-nav {
+    flex-direction: column-reverse;
+  }
+
+  .btn--primary {
+    margin-left: 0;
+    justify-content: center;
+  }
+}

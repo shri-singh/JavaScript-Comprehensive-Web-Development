@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Step Registration Form</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="form-container" role="main">
+    <h1>Create Your Account</h1>
+
+    <!-- ── Progress Bar ── -->
+    <div class="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3" aria-label="Form progress">
+      <div class="progress-bar__track">
+        <div class="progress-bar__fill" style="width: 33.33%"></div>
+      </div>
+      <ol class="progress-bar__steps">
+        <li class="progress-bar__step progress-bar__step--active" aria-current="step">
+          <span class="progress-bar__dot">1</span>
+          <span class="progress-bar__label">Personal Info</span>
+        </li>
+        <li class="progress-bar__step">
+          <span class="progress-bar__dot">2</span>
+          <span class="progress-bar__label">Account Details</span>
+        </li>
+        <li class="progress-bar__step">
+          <span class="progress-bar__dot">3</span>
+          <span class="progress-bar__label">Preferences</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ── Live Region for Announcements ── -->
+    <div id="live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ── Form ── -->
+    <form id="registration-form" novalidate>
+
+      <!-- ─── Step 1: Personal Info ─── -->
+      <fieldset class="form-step form-step--active" id="step-1" role="group" aria-labelledby="step-1-legend">
+        <legend id="step-1-legend">Step 1: Personal Information</legend>
+
+        <div class="form-field">
+          <label for="first-name">First Name <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="text"
+            id="first-name"
+            name="firstName"
+            required
+            autocomplete="given-name"
+            aria-required="true"
+            aria-describedby="first-name-error"
+          />
+          <span class="form-field__error" id="first-name-error" role="alert"></span>
+        </div>
+
+        <div class="form-field">
+          <label for="last-name">Last Name <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="text"
+            id="last-name"
+            name="lastName"
+            required
+            autocomplete="family-name"
+            aria-required="true"
+            aria-describedby="last-name-error"
+          />
+          <span class="form-field__error" id="last-name-error" role="alert"></span>
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email Address <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            aria-required="true"
+            aria-describedby="email-error"
+          />
+          <span class="form-field__error" id="email-error" role="alert"></span>
+        </div>
+      </fieldset>
+
+      <!-- ─── Step 2: Account Details ─── -->
+      <fieldset class="form-step" id="step-2" role="group" aria-labelledby="step-2-legend" hidden>
+        <legend id="step-2-legend">Step 2: Account Details</legend>
+
+        <div class="form-field">
+          <label for="username">Username <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            minlength="3"
+            maxlength="20"
+            autocomplete="username"
+            aria-required="true"
+            aria-describedby="username-error"
+          />
+          <span class="form-field__error" id="username-error" role="alert"></span>
+        </div>
+
+        <div class="form-field">
+          <label for="password">Password <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="8"
+            autocomplete="new-password"
+            aria-required="true"
+            aria-describedby="password-error password-strength-text"
+          />
+          <span class="form-field__error" id="password-error" role="alert"></span>
+
+          <!-- Password Strength Meter -->
+          <div class="password-strength" aria-hidden="false">
+            <div class="password-strength__track">
+              <div class="password-strength__fill" id="password-strength-fill"></div>
+            </div>
+            <span class="password-strength__text" id="password-strength-text"></span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="confirm-password">Confirm Password <span class="required" aria-hidden="true">*</span></label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirmPassword"
+            required
+            autocomplete="new-password"
+            aria-required="true"
+            aria-describedby="confirm-password-error"
+          />
+          <span class="form-field__error" id="confirm-password-error" role="alert"></span>
+        </div>
+      </fieldset>
+
+      <!-- ─── Step 3: Preferences ─── -->
+      <fieldset class="form-step" id="step-3" role="group" aria-labelledby="step-3-legend" hidden>
+        <legend id="step-3-legend">Step 3: Preferences</legend>
+
+        <div class="form-field">
+          <label for="theme">Color Theme</label>
+          <select id="theme" name="theme">
+            <option value="system">System Default</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="bio">Short Bio</label>
+          <textarea
+            id="bio"
+            name="bio"
+            rows="3"
+            maxlength="200"
+            aria-describedby="bio-count"
+          ></textarea>
+          <span class="form-field__count" id="bio-count">0 / 200</span>
+        </div>
+
+        <fieldset class="form-field form-field--checkboxes">
+          <legend>Notifications</legend>
+
+          <label class="checkbox-label">
+            <input type="checkbox" name="notifications" value="email" />
+            Email notifications
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" name="notifications" value="sms" />
+            SMS notifications
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" name="notifications" value="push" />
+            Push notifications
+          </label>
+        </fieldset>
+
+        <div class="form-field">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              id="terms"
+              name="terms"
+              required
+              aria-required="true"
+              aria-describedby="terms-error"
+            />
+            I agree to the <a href="#terms-modal">Terms of Service</a> <span class="required" aria-hidden="true">*</span>
+          </label>
+          <span class="form-field__error" id="terms-error" role="alert"></span>
+        </div>
+      </fieldset>
+
+      <!-- ─── Navigation Buttons ─── -->
+      <div class="form-nav">
+        <button type="button" class="btn btn--secondary" id="btn-back" hidden>
+          &larr; Back
+        </button>
+        <button type="button" class="btn btn--primary" id="btn-next">
+          Next &rarr;
+        </button>
+        <button type="submit" class="btn btn--primary" id="btn-submit" hidden>
+          Create Account
+        </button>
+      </div>
+    </form>
+
+    <!-- ── Success Message ── -->
+    <div id="success-message" class="success-message" hidden>
+      <svg class="success-message__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 12l3 3 5-5" />
+      </svg>
+      <h2>Account Created!</h2>
+      <p>Welcome aboard. Your account has been successfully created.</p>
+    </div>
+  </main>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

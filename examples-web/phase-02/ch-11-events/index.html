@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 11 — Events</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f8f9fa;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: #16213e;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: #0f3460;
+      margin-top: 2rem;
+    }
+
+    .demo-section {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-section h3 {
+      margin-top: 0;
+      color: #e94560;
+    }
+
+    button {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin: 0.25rem;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #16213e;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Event Flow Visualization */
+    .flow-box {
+      border: 2px solid;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0.5rem;
+      transition: background 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .flow-box .flow-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+
+    #flow-outer {
+      border-color: #e94560;
+      background: #fff5f5;
+    }
+
+    #flow-middle {
+      border-color: #f39c12;
+      background: #fffbf0;
+    }
+
+    #flow-inner {
+      border-color: #27ae60;
+      background: #f0fff4;
+      text-align: center;
+      padding: 1.5rem;
+      font-weight: bold;
+    }
+
+    .flow-box.flash-capture {
+      box-shadow: inset 0 0 0 3px #3498db;
+    }
+
+    .flow-box.flash-bubble {
+      box-shadow: inset 0 0 0 3px #e94560;
+    }
+
+    .flow-box.flash-target {
+      box-shadow: inset 0 0 0 3px #27ae60;
+    }
+
+    /* Event Flow Log */
+    #flow-log {
+      background: #1a1a2e;
+      color: #a8e6cf;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    .phase-capture { color: #3498db; }
+    .phase-target  { color: #27ae60; }
+    .phase-bubble  { color: #e94560; }
+
+    /* Delegation Demo */
+    #delegation-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    #delegation-list li {
+      padding: 0.75rem 1rem;
+      margin: 0.25rem 0;
+      background: #e8f4f8;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    #delegation-list li:hover {
+      background: #d0ebf5;
+    }
+
+    #delegation-list li.selected {
+      background: #0f3460;
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    #delegation-list li .delete-btn {
+      background: transparent;
+      color: inherit;
+      border: 1px solid;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    #delegation-list li .delete-btn:hover {
+      opacity: 1;
+    }
+
+    /* Keyboard Demo */
+    #key-display {
+      font-family: "Courier New", monospace;
+      background: #1a1a2e;
+      color: #f39c12;
+      font-size: 2rem;
+      text-align: center;
+      padding: 2rem;
+      border-radius: 8px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .key-badge {
+      display: inline-block;
+      background: #2d2d4e;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      margin: 0.2rem;
+      border: 1px solid #555;
+    }
+
+    /* Custom Events */
+    .module-box {
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .module-box h4 {
+      margin: 0 0 0.5rem;
+    }
+
+    #module-a {
+      border-color: #3498db;
+      background: #ebf5fb;
+    }
+
+    #module-b {
+      border-color: #e94560;
+      background: #fff5f5;
+    }
+
+    .notification {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* AbortController Demo */
+    #abort-status {
+      font-weight: bold;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .status-mounted {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-unmounted {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Main Log */
+    #log {
+      background: #1a1a2e;
+      color: #a8e6cf;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    #log .log-entry {
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #2d2d4e;
+    }
+
+    .log-label {
+      color: #f39c12;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chapter 11 — Events</h1>
+  <p>Interactive examples demonstrating event flow, delegation, custom events, and listener management.</p>
+
+  <!-- Section 1: Event Flow Visualization -->
+  <div class="demo-section">
+    <h3>1. Event Flow: Capture &rarr; Target &rarr; Bubble</h3>
+    <p>Click the innermost green box. Watch the event travel down (capture, blue) then back up (bubble, red).</p>
+
+    <div class="controls">
+      <button id="clear-flow-log">Clear Flow Log</button>
+    </div>
+
+    <div id="flow-outer" class="flow-box">
+      <div class="flow-label">OUTER (div)</div>
+      <div id="flow-middle" class="flow-box">
+        <div class="flow-label">MIDDLE (div)</div>
+        <div id="flow-inner" class="flow-box">
+          <div class="flow-label">INNER (target)</div>
+          Click Me
+        </div>
+      </div>
+    </div>
+
+    <div id="flow-log"></div>
+  </div>
+
+  <!-- Section 2: Event Delegation -->
+  <div class="demo-section">
+    <h3>2. Event Delegation</h3>
+    <p>One listener on the <code>&lt;ul&gt;</code> handles all clicks. Click an item to select it. Click the delete button to remove it. New items work automatically.</p>
+
+    <div class="controls">
+      <button id="add-item-btn">Add New Item</button>
+    </div>
+
+    <ul id="delegation-list">
+      <li data-id="1">Learn about event capture <button class="delete-btn">Delete</button></li>
+      <li data-id="2">Master event delegation <button class="delete-btn">Delete</button></li>
+      <li data-id="3">Build custom events <button class="delete-btn">Delete</button></li>
+      <li data-id="4">Understand stopPropagation <button class="delete-btn">Delete</button></li>
+    </ul>
+  </div>
+
+  <!-- Section 3: Keyboard Events -->
+  <div class="demo-section">
+    <h3>3. Keyboard Events</h3>
+    <p>Press any key while this page is focused. Modifier keys are shown alongside the main key.</p>
+
+    <div id="key-display">Press any key...</div>
+  </div>
+
+  <!-- Section 4: Custom Events -->
+  <div class="demo-section">
+    <h3>4. Custom Events (Inter-Module Communication)</h3>
+    <p>Module A dispatches a custom event. Module B listens and reacts. They have no direct reference to each other.</p>
+
+    <div id="module-a" class="module-box">
+      <h4>Module A — Sender</h4>
+      <input type="text" id="custom-event-input" placeholder="Type a message..." style="padding:0.4rem;width:60%;border:1px solid #ccc;border-radius:4px;">
+      <button id="dispatch-custom">Send Message</button>
+    </div>
+
+    <div id="module-b" class="module-box">
+      <h4>Module B — Receiver</h4>
+      <div id="module-b-messages">Waiting for messages...</div>
+    </div>
+  </div>
+
+  <!-- Section 5: Listener Options & Cleanup -->
+  <div class="demo-section">
+    <h3>5. Listener Options &amp; AbortController Cleanup</h3>
+    <p>Mount adds three listeners (click, mousemove, keydown). Unmount removes all of them at once with <code>AbortController</code>.</p>
+
+    <div class="controls">
+      <button id="mount-btn">Mount Listeners</button>
+      <button id="unmount-btn">Unmount Listeners</button>
+      <button id="once-btn">Once Listener (click me)</button>
+    </div>
+
+    <div id="abort-status" class="status-unmounted">Status: Unmounted</div>
+    <div id="abort-area" style="background:#eee;border-radius:8px;padding:1rem;margin-top:0.5rem;min-height:60px;text-align:center;color:#888;">
+      Mount listeners, then interact here
+    </div>
+  </div>
+
+  <!-- Log Panel -->
+  <h2>Output Log</h2>
+  <div id="log"></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "project-02-reactive-search",
+  "private": true,
+  "scripts": {
+    "dev": "vite solution",
+    "dev:starter": "vite starter"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

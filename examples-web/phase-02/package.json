@@ -1,0 +1,14 @@
+{
+  "name": "examples-web-phase-02",
+  "private": true,
+  "scripts": {
+    "dev:dom": "vite ch-10-dom",
+    "dev:events": "vite ch-11-events",
+    "dev:forms": "vite ch-12-forms",
+    "dev:state": "vite ch-13-state",
+    "dev:reactivity": "vite ch-14-reactivity"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

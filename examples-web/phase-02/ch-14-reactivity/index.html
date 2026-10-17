@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 14 — Reactivity Patterns</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f8f9fa;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: #16213e;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: #0f3460;
+      margin-top: 2rem;
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .panel h3 {
+      margin-top: 0;
+      color: #e94560;
+    }
+
+    button {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: #16213e;
+    }
+
+    button.danger {
+      background: #e94560;
+    }
+
+    button.danger:hover {
+      background: #c0392b;
+    }
+
+    button.secondary {
+      background: #6c757d;
+    }
+
+    button.secondary:hover {
+      background: #545b62;
+    }
+
+    /* Counter Section */
+    .counter-display {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0;
+      color: #0f3460;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .counter-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Todo Section */
+    .todo-input-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .todo-input-row input {
+      flex: 1;
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #dee2e6;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .todo-input-row input:focus {
+      outline: none;
+      border-color: #0f3460;
+      box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.15);
+    }
+
+    #proxy-todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #proxy-todo-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem;
+      margin-bottom: 0.25rem;
+      background: #f8f9fa;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    #proxy-todo-list li:hover {
+      background: #e8f4f8;
+    }
+
+    #proxy-todo-list li.completed .todo-text {
+      text-decoration: line-through;
+      color: #6c757d;
+    }
+
+    #proxy-todo-list li input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .todo-text {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .todo-delete {
+      background: transparent;
+      color: #e94560;
+      border: 1px solid #e94560;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    #proxy-todo-list li:hover .todo-delete {
+      opacity: 1;
+    }
+
+    .todo-delete:hover {
+      background: #e94560;
+      color: #fff;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 1.5rem;
+      color: #adb5bd;
+    }
+
+    .todo-count {
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-top: 0.5rem;
+    }
+
+    /* Signals Section */
+    .signal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .signal-box {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .signal-box label {
+      display: block;
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-bottom: 0.25rem;
+    }
+
+    .signal-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0f3460;
+    }
+
+    .signal-derived {
+      background: #e8f4f8;
+      border: 2px dashed #0f3460;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .signal-derived label {
+      display: block;
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-bottom: 0.25rem;
+    }
+
+    .signal-derived .signal-value {
+      color: #e94560;
+    }
+
+    .signal-controls {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Log */
+    #log {
+      background: #1a1a2e;
+      color: #a8e6cf;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    #log .log-entry {
+      padding: 0.15rem 0;
+      border-bottom: 1px solid #2d2d4e;
+    }
+
+    .log-label {
+      color: #f39c12;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chapter 14 — Reactivity Patterns</h1>
+  <p>Three demos showing different reactivity approaches: a store with dispatch/subscribe, a Proxy-based reactive object, and signals with fine-grained updates.</p>
+
+  <div class="app-layout">
+    <!-- Left Column -->
+    <div>
+      <!-- Demo 1: Store with dispatch/subscribe -->
+      <div class="panel">
+        <h3>1. Store (dispatch + subscribe)</h3>
+        <p style="margin-top:0;font-size:0.9rem;color:#6c757d;">
+          A Redux-style store. Actions are dispatched, a reducer produces new state, and subscribers are notified.
+        </p>
+        <div class="counter-display" id="counter-display">0</div>
+        <div class="counter-buttons">
+          <button id="dec-5-btn">-5</button>
+          <button id="dec-btn">-1</button>
+          <button id="reset-btn" class="secondary">Reset</button>
+          <button id="inc-btn">+1</button>
+          <button id="inc-5-btn">+5</button>
+        </div>
+      </div>
+
+      <!-- Demo 2: Proxy-based Reactive State -->
+      <div class="panel" style="margin-top:1.5rem;">
+        <h3>2. Proxy Reactive Todo List</h3>
+        <p style="margin-top:0;font-size:0.9rem;color:#6c757d;">
+          Mutate the state object directly — the Proxy detects changes and re-renders automatically.
+        </p>
+        <div class="todo-input-row">
+          <input
+            type="text"
+            id="proxy-todo-input"
+            placeholder="Add a todo..."
+            aria-label="New todo text"
+          >
+          <button id="proxy-add-btn">Add</button>
+        </div>
+        <ul id="proxy-todo-list"></ul>
+        <div class="todo-count" id="proxy-todo-count"></div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div>
+      <!-- Demo 3: Signals -->
+      <div class="panel">
+        <h3>3. Signals (Fine-Grained Reactivity)</h3>
+        <p style="margin-top:0;font-size:0.9rem;color:#6c757d;">
+          Each signal holds a value. Effects that read signals re-run automatically when those signals change.
+        </p>
+        <div class="signal-grid">
+          <div class="signal-box">
+            <label>Price ($)</label>
+            <div class="signal-value" id="signal-price">10.00</div>
+          </div>
+          <div class="signal-box">
+            <label>Quantity</label>
+            <div class="signal-value" id="signal-qty">1</div>
+          </div>
+        </div>
+        <div class="signal-derived">
+          <label>Total (computed signal: price x qty)</label>
+          <div class="signal-value" id="signal-total">$10.00</div>
+        </div>
+        <div class="signal-controls">
+          <button id="price-down">Price -1</button>
+          <button id="price-up">Price +1</button>
+          <button id="qty-down">Qty -1</button>
+          <button id="qty-up">Qty +1</button>
+          <button id="signal-reset" class="secondary">Reset</button>
+        </div>
+      </div>
+
+      <!-- Pattern Info -->
+      <div class="panel" style="margin-top:1.5rem;">
+        <h3>Pattern Comparison</h3>
+        <table style="width:100%;font-size:0.85rem;border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:2px solid #dee2e6;text-align:left;">
+              <th style="padding:0.4rem;">Pattern</th>
+              <th style="padding:0.4rem;">Trigger</th>
+              <th style="padding:0.4rem;">Granularity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #dee2e6;">
+              <td style="padding:0.4rem;"><strong>Store</strong></td>
+              <td style="padding:0.4rem;">dispatch(action)</td>
+              <td style="padding:0.4rem;">Whole state</td>
+            </tr>
+            <tr style="border-bottom:1px solid #dee2e6;">
+              <td style="padding:0.4rem;"><strong>Proxy</strong></td>
+              <td style="padding:0.4rem;">Direct mutation</td>
+              <td style="padding:0.4rem;">Per property</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem;"><strong>Signals</strong></td>
+              <td style="padding:0.4rem;">setter(value)</td>
+              <td style="padding:0.4rem;">Fine-grained</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Panel -->
+  <h2>Reactivity Log</h2>
+  <div id="log"></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

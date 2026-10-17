@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node examples-node/phase-01/ch-03-values-types/01-primitives.js)",
+      "Bash(node examples-node/phase-01/ch-03-values-types/02-coercion.js)",
+      "Bash(node examples-node/phase-01/ch-03-values-types/03-conversions.js)",
+      "Bash(node examples-node/phase-01/ch-04-scope/02-hoisting.js)",
+      "Bash(node examples-node/phase-01/ch-05-functions/01-declarations-vs-expressions.js)",
+      "Bash(node examples-node/phase-01/ch-05-functions/02-arrow-functions.js)",
+      "Bash(node examples-node/phase-01/ch-05-functions/03-this-binding.js)",
+      "Bash(node --check examples-node/phase-01/ch-04-scope/02-hoisting.js)",
+      "Bash(node --check examples-node/phase-01/ch-07-arrays-iteration/03-iterators-generators.js)",
+      "Bash(node --check examples-node/phase-02/ch-15-async/01-promises.js)",
+      "Bash(node --check examples-node/phase-03/ch-20-performance/debounce-throttle.js)"
+    ]
+  }
+}

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 12 — HTML Forms</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f8f9fa;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: #16213e;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: #0f3460;
+      margin-top: 2rem;
+    }
+
+    .demo-section {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-section h3 {
+      margin-top: 0;
+      color: #e94560;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #1a1a2e;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #dee2e6;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #0f3460;
+      box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.15);
+    }
+
+    input.valid,
+    textarea.valid,
+    select.valid {
+      border-color: #27ae60;
+    }
+
+    input.invalid,
+    textarea.invalid,
+    select.invalid {
+      border-color: #e94560;
+    }
+
+    .help-text {
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin: 0.25rem 0 0;
+    }
+
+    .error-message {
+      font-size: 0.85rem;
+      color: #e94560;
+      margin: 0.25rem 0 0;
+      min-height: 1.2em;
+    }
+
+    /* Buttons */
+    button,
+    input[type="submit"] {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    button:hover,
+    input[type="submit"]:hover {
+      background: #16213e;
+    }
+
+    button:disabled {
+      background: #adb5bd;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #6c757d;
+    }
+
+    button.secondary:hover {
+      background: #545b62;
+    }
+
+    /* Fieldset */
+    fieldset {
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    legend {
+      font-weight: 600;
+      padding: 0 0.5rem;
+    }
+
+    fieldset label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: normal;
+      margin-right: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    fieldset input[type="checkbox"],
+    fieldset input[type="radio"] {
+      width: auto;
+    }
+
+    /* Error summary */
+    .error-summary {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-summary.visible {
+      display: block;
+    }
+
+    .error-summary h4 {
+      margin: 0 0 0.5rem;
+      color: #721c24;
+    }
+
+    .error-summary ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    .error-summary a {
+      color: #721c24;
+    }
+
+    /* FormData Inspector */
+    #formdata-inspector {
+      background: #1a1a2e;
+      color: #a8e6cf;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+
+    /* Success Banner */
+    .success-banner {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 6px;
+      padding: 1rem;
+      color: #155724;
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .success-banner.visible {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Log */
+    #log {
+      background: #1a1a2e;
+      color: #a8e6cf;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    #log .log-entry {
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #2d2d4e;
+    }
+
+    .log-label {
+      color: #f39c12;
+      font-weight: bold;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Chapter 12 — HTML Forms</h1>
+  <p>A registration form demonstrating FormData, validation, accessibility, and form state management.</p>
+
+  <div class="two-col">
+    <!-- Left: The Form -->
+    <div>
+      <div class="demo-section">
+        <h3>Registration Form</h3>
+
+        <!-- Error Summary (accessible) -->
+        <div id="error-summary" class="error-summary" role="alert" aria-live="assertive">
+          <h4>Please fix the following errors:</h4>
+          <ul id="error-summary-list"></ul>
+        </div>
+
+        <!-- Success Banner -->
+        <div id="success-banner" class="success-banner" role="status" aria-live="polite">
+          Registration successful! Form data has been captured.
+        </div>
+
+        <form id="registration-form" novalidate>
+          <!-- Username -->
+          <div class="form-group">
+            <label for="username">Username <span aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              minlength="3"
+              maxlength="20"
+              pattern="[a-zA-Z0-9_]+"
+              autocomplete="username"
+              aria-describedby="username-help username-error"
+            >
+            <p id="username-help" class="help-text">3-20 characters, letters, numbers, and underscores only.</p>
+            <p id="username-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="email">Email <span aria-hidden="true">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              aria-describedby="email-error"
+            >
+            <p id="email-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="password">Password <span aria-hidden="true">*</span></label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              minlength="8"
+              autocomplete="new-password"
+              aria-describedby="password-help password-error"
+            >
+            <p id="password-help" class="help-text">At least 8 characters.</p>
+            <p id="password-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password <span aria-hidden="true">*</span></label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirmPassword"
+              required
+              autocomplete="new-password"
+              aria-describedby="confirm-password-error"
+            >
+            <p id="confirm-password-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Age -->
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              min="13"
+              max="120"
+              aria-describedby="age-error"
+            >
+            <p id="age-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Website -->
+          <div class="form-group">
+            <label for="website">Website</label>
+            <input
+              type="url"
+              id="website"
+              name="website"
+              placeholder="https://example.com"
+              aria-describedby="website-error"
+            >
+            <p id="website-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Role -->
+          <div class="form-group">
+            <label for="role">Role <span aria-hidden="true">*</span></label>
+            <select id="role" name="role" required aria-describedby="role-error">
+              <option value="">Choose a role...</option>
+              <option value="developer">Developer</option>
+              <option value="designer">Designer</option>
+              <option value="manager">Manager</option>
+              <option value="other">Other</option>
+            </select>
+            <p id="role-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Bio -->
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" rows="3" maxlength="300" aria-describedby="bio-help"></textarea>
+            <p id="bio-help" class="help-text"><span id="bio-count">0</span>/300 characters</p>
+          </div>
+
+          <!-- Interests (checkboxes) -->
+          <fieldset>
+            <legend>Interests</legend>
+            <label><input type="checkbox" name="interests" value="frontend"> Frontend</label>
+            <label><input type="checkbox" name="interests" value="backend"> Backend</label>
+            <label><input type="checkbox" name="interests" value="devops"> DevOps</label>
+            <label><input type="checkbox" name="interests" value="design"> Design</label>
+          </fieldset>
+
+          <!-- Contact Preference (radio) -->
+          <fieldset>
+            <legend>Preferred Contact Method <span aria-hidden="true">*</span></legend>
+            <label><input type="radio" name="contact" value="email" required> Email</label>
+            <label><input type="radio" name="contact" value="phone"> Phone</label>
+            <label><input type="radio" name="contact" value="none"> No contact</label>
+          </fieldset>
+
+          <!-- Terms -->
+          <div class="form-group">
+            <label style="display:inline-flex;align-items:center;gap:0.4rem;">
+              <input type="checkbox" id="terms" name="terms" value="accepted" required>
+              I agree to the terms and conditions <span aria-hidden="true">*</span>
+            </label>
+            <p id="terms-error" class="error-message" aria-live="assertive"></p>
+          </div>
+
+          <!-- Buttons -->
+          <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+            <button type="submit" id="submit-btn">Register</button>
+            <button type="reset" class="secondary">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: FormData Inspector -->
+    <div>
+      <div class="demo-section">
+        <h3>FormData Inspector</h3>
+        <p>Shows the current FormData in real time as you fill in the form.</p>
+        <div id="formdata-inspector">{ empty form }</div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Validity States</h3>
+        <p>Real-time validity check of each field.</p>
+        <div id="validity-panel" style="font-family:'Courier New',monospace;font-size:0.85rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Panel -->
+  <h2>Output Log</h2>
+  <div id="log"></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

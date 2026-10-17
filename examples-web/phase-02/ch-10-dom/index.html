@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 10 — DOM Fundamentals</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f8f9fa;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: #16213e;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: #0f3460;
+      margin-top: 2rem;
+    }
+
+    .demo-section {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-section h3 {
+      margin-top: 0;
+      color: #e94560;
+    }
+
+    button {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin: 0.25rem;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #16213e;
+    }
+
+    button.danger {
+      background: #e94560;
+    }
+
+    button.danger:hover {
+      background: #c0392b;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    #playground {
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 1rem;
+      min-height: 100px;
+      margin-bottom: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    #playground:not(:empty) {
+      border-color: #0f3460;
+    }
+
+    #playground .card {
+      background: #e8f4f8;
+      border: 1px solid #b8d4e3;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+    }
+
+    #playground .highlight {
+      background: #fff3cd;
+      border-color: #ffc107;
+    }
+
+    .traversal-tree {
+      font-family: "Courier New", monospace;
+      background: #1a1a2e;
+      color: #a8e6cf;
+      padding: 1rem;
+      border-radius: 8px;
+      line-height: 1.8;
+    }
+
+    .traversal-tree .active-node {
+      background: #e94560;
+      color: #fff;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+    }
+
+    #attribute-demo img {
+      border: 3px solid #dee2e6;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+      transition: border-color 0.3s;
+      display: block;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin: 0.25rem;
+    }
+
+    .badge-primary { background: #0f3460; color: #fff; }
+    .badge-success { background: #27ae60; color: #fff; }
+    .badge-warning { background: #f39c12; color: #fff; }
+    .badge-danger  { background: #e94560; color: #fff; }
+
+    #log {
+      background: #1a1a2e;
+      color: #a8e6cf;
+      font-family: "Courier New", monospace;
+      font-size: 0.85rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    #log .log-entry {
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #2d2d4e;
+    }
+
+    #log .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .log-label {
+      color: #f39c12;
+      font-weight: bold;
+    }
+
+    #perf-results {
+      font-family: "Courier New", monospace;
+    }
+
+    #perf-results span {
+      display: block;
+      padding: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chapter 10 — DOM Fundamentals</h1>
+  <p>Interactive examples demonstrating DOM selection, traversal, creation, modification, and removal.</p>
+
+  <!-- Section 1: Selecting Elements -->
+  <div class="demo-section" id="selection-demo">
+    <h3>1. Selecting Elements</h3>
+    <p>Click buttons to select elements using different methods and see the results.</p>
+
+    <div id="target-area">
+      <p id="intro-text">This paragraph has <strong>id="intro-text"</strong>.</p>
+      <ul class="fruit-list">
+        <li class="fruit" data-color="red">Apple</li>
+        <li class="fruit" data-color="yellow">Banana</li>
+        <li class="fruit" data-color="purple">Grape</li>
+        <li class="fruit" data-color="orange">Orange</li>
+      </ul>
+    </div>
+
+    <div class="controls">
+      <button data-action="select-id">getElementById</button>
+      <button data-action="select-qs">querySelector</button>
+      <button data-action="select-qsa">querySelectorAll</button>
+      <button data-action="select-class">getElementsByClassName</button>
+    </div>
+  </div>
+
+  <!-- Section 2: Traversing the DOM -->
+  <div class="demo-section" id="traversal-demo">
+    <h3>2. Traversing the DOM</h3>
+    <p>Navigate the tree from a starting element. The active node is highlighted.</p>
+
+    <div class="traversal-tree" id="tree-display"></div>
+
+    <div class="controls">
+      <button data-action="trav-parent">parentElement</button>
+      <button data-action="trav-first">firstElementChild</button>
+      <button data-action="trav-last">lastElementChild</button>
+      <button data-action="trav-next">nextElementSibling</button>
+      <button data-action="trav-prev">previousElementSibling</button>
+      <button data-action="trav-closest">closest(".demo-section")</button>
+      <button data-action="trav-reset">Reset to &lt;ul&gt;</button>
+    </div>
+  </div>
+
+  <!-- Section 3: Creating & Removing Elements -->
+  <div class="demo-section" id="create-demo">
+    <h3>3. Creating, Appending &amp; Removing Elements</h3>
+    <p>Build elements programmatically and insert them into the playground area below.</p>
+
+    <div id="playground"></div>
+
+    <div class="controls">
+      <button data-action="create-card">Create Card</button>
+      <button data-action="prepend-card">Prepend Card</button>
+      <button data-action="insert-html">insertAdjacentHTML</button>
+      <button data-action="fragment-batch">Fragment (batch 20)</button>
+      <button data-action="remove-last" class="danger">Remove Last</button>
+      <button data-action="clear-all" class="danger">Clear All</button>
+    </div>
+  </div>
+
+  <!-- Section 4: Attributes, Classes & Styles -->
+  <div class="demo-section" id="attribute-demo">
+    <h3>4. Attributes, Classes &amp; Styles</h3>
+
+    <div id="style-target" class="badge badge-primary" data-level="1" data-category="demo">
+      Styled Element
+    </div>
+
+    <div class="controls" style="margin-top:1rem;">
+      <button data-action="toggle-class">Toggle .badge-warning</button>
+      <button data-action="add-class">Add .badge-danger</button>
+      <button data-action="remove-class">Remove .badge-danger</button>
+      <button data-action="set-attr">Set data-level="99"</button>
+      <button data-action="read-dataset">Read dataset</button>
+      <button data-action="change-style">Random bg color</button>
+      <button data-action="computed-style">Log computedStyle</button>
+    </div>
+  </div>
+
+  <!-- Section 5: innerHTML vs textContent vs innerText -->
+  <div class="demo-section" id="content-demo">
+    <h3>5. innerHTML vs textContent vs innerText</h3>
+
+    <div id="content-target">
+      <p>Visible text with <strong>bold</strong> and <em>italic</em>.</p>
+      <p style="display:none">Hidden paragraph (display:none).</p>
+    </div>
+
+    <div class="controls">
+      <button data-action="read-inner-html">Read innerHTML</button>
+      <button data-action="read-text-content">Read textContent</button>
+      <button data-action="read-inner-text">Read innerText</button>
+      <button data-action="safe-set">Safe textContent set</button>
+      <button data-action="xss-demo">XSS-safe demo</button>
+    </div>
+  </div>
+
+  <!-- Section 6: Performance -->
+  <div class="demo-section" id="perf-demo">
+    <h3>6. DocumentFragment Performance</h3>
+    <p>Insert 2000 items using three methods and compare the time.</p>
+    <div class="controls">
+      <button data-action="perf-test">Run Performance Test</button>
+    </div>
+    <div id="perf-results"></div>
+    <ul id="perf-target" style="display:none;"></ul>
+  </div>
+
+  <!-- Log Panel -->
+  <h2>Output Log</h2>
+  <div id="log"></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

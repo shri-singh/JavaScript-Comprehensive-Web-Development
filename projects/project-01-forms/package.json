@@ -1,0 +1,12 @@
+{
+  "name": "project-01-forms",
+  "private": true,
+  "scripts": {
+    "dev": "vite solution",
+    "dev:starter": "vite starter",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

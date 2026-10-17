@@ -1,0 +1,11 @@
+{
+  "name": "project-04-capstone",
+  "private": true,
+  "scripts": {
+    "dev": "vite solution",
+    "dev:starter": "vite starter"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
